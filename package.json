@@ -1,0 +1,17 @@
+{
+  "name": "mart-system-erp-migration",
+  "version": "1.0.0",
+  "description": "PostgreSQL database migration runner for MartSystemERP",
+  "main": "migrate.js",
+  "scripts": {
+    "migrate": "node migrate.js",
+    "migrate:status": "node migrate.js --status",
+    "migrate:reset": "node migrate.js --reset"
+  },
+  "keywords": ["postgresql", "migration", "database"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pg": "^8.13.1"
+  }
+}

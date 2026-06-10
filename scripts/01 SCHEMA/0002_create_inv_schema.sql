@@ -1,0 +1,3 @@
+CREATE SCHEMA IF NOT EXISTS inv;
+
+COMMENT ON SCHEMA inv IS 'Inventory schema';

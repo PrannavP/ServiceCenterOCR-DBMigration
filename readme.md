@@ -1,0 +1,1 @@
+This is folder where whole system's database migration script exists. From here can create table, alter, create schemas, triggers, functions, views, types, etc by the help of migration script.
