@@ -191,7 +191,7 @@ async function runMigrations() {
 
   try {
     // Test connection
-    logHeader('MartSystemERP - Database Migration');
+    logHeader('Service Center System OCR - Database Migration');
     logInfo(`Connecting to PostgreSQL at ${config.db.host}:${config.db.port}/${config.db.database}...`);
 
     const client = await pool.connect();

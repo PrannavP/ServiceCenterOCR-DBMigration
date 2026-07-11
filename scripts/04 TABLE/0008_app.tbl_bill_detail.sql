@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS app.tbl_bill (
+CREATE TABLE IF NOT EXISTS app.tbl_bill_detail (
     uid         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     id          SERIAL,
     
@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS app.tbl_bill (
     
     item_name TEXT NOT NULL,
     quantity INT NOT NULL,
-    rate NUMERIC(10,2) NOT NULL
-    total NUMERIC(10,2) NOT NULL
+    rate NUMERIC(10,2) NOT NULL,
+    total NUMERIC(10,2) NOT NULL,
 
     tax_percentage INT NOT NULL,
     tax_amount NUMERIC(10,2) NOT NULL,
@@ -22,5 +22,5 @@ CREATE TABLE IF NOT EXISTS app.tbl_bill (
 );
 
 -- log table
-CREATE TABLE app.tbl_bill_log AS
-SELECT * FROM app.tbl_bill;
+CREATE TABLE app.tbl_bill_detail_log AS
+SELECT * FROM app.tbl_bill_detail;

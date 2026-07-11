@@ -14,6 +14,10 @@ const config = {
         user: process.env.DB_USER || 'postgres',
         password: process.env.DB_PASSWORD || 'momo',
 
+        ssl: {
+            rejectUnauthorized: false
+        },
+
         // Connection pool settings
         max: 5,                    // Maximum number of clients in the pool
         idleTimeoutMillis: 30000,  // Close idle clients after 30 seconds
