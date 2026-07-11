@@ -1,14 +1,17 @@
-CREATE TABLE IF NOT EXISTS app.tbl_jobcard_detail (
+CREATE TABLE IF NOT EXISTS app.tbl_bill (
     uid         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     id          SERIAL,
     
-    jobcard_id INT NOT NULL,
-    jobcard_uid UUID NOT NULL,
-    part_id INT NOT NULL,
+    bill_id INT NOT NULL,
+    bill_uid UUID NOT NULL,
+    
+    item_name TEXT NOT NULL,
     quantity INT NOT NULL,
-    rate NUMERIC(10,2) NOT NULL,
-    total NUMERIC(10,2) NOT NULL,
-    remarks TEXT,
+    rate NUMERIC(10,2) NOT NULL
+    total NUMERIC(10,2) NOT NULL
+
+    tax_percentage INT NOT NULL,
+    tax_amount NUMERIC(10,2) NOT NULL,
 
     is_active       BOOLEAN DEFAULT TRUE,
     is_deleted      BOOLEAN DEFAULT FALSE,
@@ -19,5 +22,5 @@ CREATE TABLE IF NOT EXISTS app.tbl_jobcard_detail (
 );
 
 -- log table
-CREATE TABLE app.tbl_jobcard_detail_log AS
-SELECT * FROM app.tbl_jobcard_detail;
+CREATE TABLE app.tbl_bill_log AS
+SELECT * FROM app.tbl_bill;
