@@ -5,6 +5,8 @@
  * You can also use environment variables for sensitive data.
  */
 
+require('dotenv').config();
+
 const config = {
     // Database connection settings
     db: {

@@ -8,10 +8,15 @@
     "migrate:status": "node migrate.js --status",
     "migrate:reset": "node migrate.js --reset"
   },
-  "keywords": ["postgresql", "migration", "database"],
+  "keywords": [
+    "postgresql",
+    "migration",
+    "database"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^17.4.2",
     "pg": "^8.13.1"
   }
 }

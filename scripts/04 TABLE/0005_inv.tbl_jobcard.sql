@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS app.tbl_jobcard (
     
     customer_name VARCHAR(100) NOT NULL DEFAULT '',
     customer_address VARCHAR(100) NOT NULL,
-    static_vehicle_type_id INT NOT NULL, -- scooter / bike
-    static_vehicle_id INT NOT NULL, -- ntorq, raider, ronin...
+    static_vehicle_type_id INT, -- scooter / bike
+    static_vehicle_id INT, -- ntorq, raider, ronin...
     vehicle_registration_number VARCHAR(50) NOT NULL,
     odometer_reading TEXT NOT NULL,
     fuel_quantity VARCHAR(100) NOT NULL,

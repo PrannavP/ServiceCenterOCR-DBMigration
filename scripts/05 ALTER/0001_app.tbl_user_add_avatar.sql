@@ -10,5 +10,6 @@ BEGIN
         WHERE table_schema = 'app' AND table_name = 'tbl_user' AND column_name = 'avatar_url'
     ) THEN
         ALTER TABLE app.tbl_user ADD COLUMN avatar_url VARCHAR(500);
+        ALTER TABLE app.tbl_user_log ADD COLUMN avatar_url VARCHAR(500);
     END IF;
 END$$;
