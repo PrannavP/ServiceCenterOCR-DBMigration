@@ -44,6 +44,13 @@ const fs = require('fs');
 const path = require('path');
 const config = require('./config');
 
+// ─── Always run script ─────────────────────────────────────────────────────
+const ALWAYS_RUN_FOLDERS = new Set([
+  '06 VIEWS',
+  '07 FUNCTIONS',
+  '08 PROCEDURES',
+]);
+
 // ─── ANSI Color Helpers ─────────────────────────────────────────────────────
 
 const colors = {
@@ -236,9 +243,12 @@ async function runMigrations() {
         const sqlContent = fs.readFileSync(script.fullPath, 'utf8').trim();
         const hash = hashContent(sqlContent);
 
+        const alwaysRun = ALWAYS_RUN_FOLDERS.has(folder.name);
+
         // Check if already executed
-        if (executedScripts.has(key)) {
+        if (executedScripts.has(key) && !alwaysRun) {
           const prev = executedScripts.get(key);
+
           if (prev.script_hash === hash) {
             logSkip(`${script.name} (already executed)`);
             totalSkipped++;
@@ -251,6 +261,10 @@ async function runMigrations() {
             continue;
           }
         }
+
+        if (alwaysRun && executedScripts.has(key)) {
+          logInfo(`${script.name} (re-running ${folder.name})`);
+        };
 
         // Skip empty files
         if (!sqlContent) {
