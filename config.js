@@ -12,13 +12,13 @@ const config = {
     db: {
         host: process.env.DB_HOST || 'localhost',
         port: parseInt(process.env.DB_PORT) || 5433,
-        database: process.env.DB_NAME || 'ServiceCenterDb',
+        database: process.env.DB_NAME || 'ServiceCentreDb',
         user: process.env.DB_USER || 'postgres',
         password: process.env.DB_PASSWORD || 'momo',
 
-        ssl: {
-            rejectUnauthorized: false
-        },
+        // ssl: {
+        //     rejectUnauthorized: false
+        // },
 
         // Connection pool settings
         max: 5,                    // Maximum number of clients in the pool
