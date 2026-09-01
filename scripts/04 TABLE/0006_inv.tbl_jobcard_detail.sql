@@ -18,6 +18,5 @@ CREATE TABLE IF NOT EXISTS app.tbl_jobcard_detail (
     updated_by      int not null DEFAULT 0
 );
 
--- log table
 CREATE TABLE app.tbl_jobcard_detail_log AS
 SELECT * FROM app.tbl_jobcard_detail;

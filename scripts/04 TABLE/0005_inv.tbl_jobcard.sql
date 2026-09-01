@@ -4,15 +4,15 @@ CREATE TABLE IF NOT EXISTS app.tbl_jobcard (
     
     customer_name VARCHAR(100) NOT NULL DEFAULT '',
     customer_address VARCHAR(100) NOT NULL,
-    static_vehicle_type_id INT, -- scooter / bike
-    static_vehicle_id INT, -- ntorq, raider, ronin...
+    static_vehicle_type_id INT, 
+    static_vehicle_id INT, 
     vehicle_registration_number VARCHAR(50) NOT NULL,
     odometer_reading TEXT NOT NULL,
     fuel_quantity VARCHAR(100) NOT NULL,
     chasis_number VARCHAR(100) NOT NULL,
     contact_number varchar(50) NOT NULL,
     problems JSONB DEFAULT '{}'::jsonb,
-    -- later add status column enum (completed, payment_left, closed)
+    
     remarks TEXT,
 
     is_active       BOOLEAN DEFAULT TRUE,
@@ -23,6 +23,5 @@ CREATE TABLE IF NOT EXISTS app.tbl_jobcard (
     updated_by      int not null DEFAULT 0
 );
 
--- log table
 CREATE TABLE app.tbl_jobcard_log AS
 SELECT * FROM app.tbl_jobcard;

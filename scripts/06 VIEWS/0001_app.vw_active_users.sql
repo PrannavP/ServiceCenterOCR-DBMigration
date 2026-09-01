@@ -1,7 +1,4 @@
--- ============================================================
--- View: app.vw_active_users
--- Description: Returns all active users
--- ============================================================
+
 
 CREATE OR REPLACE VIEW app.vw_active_users AS
 SELECT 

@@ -1,7 +1,4 @@
--- ============================================================
--- Table: app.tbl_user
--- Description: Stores user account information
--- ============================================================
+
 
 CREATE TABLE IF NOT EXISTS app.tbl_user (
     uid         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -19,6 +16,5 @@ CREATE TABLE IF NOT EXISTS app.tbl_user (
     updated_by      int not null DEFAULT 0
 );
 
--- log table
 CREATE TABLE app.tbl_user_log AS
 SELECT * FROM app.tbl_user

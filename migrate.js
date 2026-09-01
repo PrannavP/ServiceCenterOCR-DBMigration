@@ -1,57 +1,15 @@
-/**
- * PostgreSQL Database Migration Runner
- * =====================================
- * 
- * Reads SQL scripts from the ./scripts directory and executes them
- * in the correct order against the configured PostgreSQL database.
- * 
- * Folder Structure:
- *   scripts/
- *     01 SCHEMA/
- *       0001_app.schema.sql
- *     02 EXTENSIONS/
- *       0001_uuid_ossp.sql
- *     03 TYPES/
- *       0001_app.enum_status.sql
- *     04 TABLE/
- *       0001_app.tbl_user.sql
- *       0002_app.tbl_role.sql
- *     05 ALTER/
- *       0001_app.tbl_user_add_email.sql
- *     06 VIEWS/
- *       0001_app.vw_active_users.sql
- *     07 FUNCTIONS/
- *       0001_app.fn_get_user.sql
- *     08 PROCEDURES/
- *       0001_app.sp_create_user.sql
- *     09 TRIGGERS/
- *       0001_app.trg_user_audit.sql
- *     10 SEED/
- *       0001_app.seed_roles.sql
- * 
- * Usage:
- *   node migrate.js            - Run all pending migrations
- *   node migrate.js --status   - Show migration status
- *   node migrate.js --reset    - Reset migration history (WARNING: does not undo migrations)
- * 
- * Folders are executed in numeric prefix order (01, 02, 03...).
- * Scripts within each folder are executed in numeric prefix order (0001, 0002...).
- * Already-executed scripts are tracked and skipped on subsequent runs.
- */
+
 
 const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
 const config = require('./config');
 
-// ─── Always run script ─────────────────────────────────────────────────────
 const ALWAYS_RUN_FOLDERS = new Set([
   '06 VIEWS',
   '07 FUNCTIONS',
   '08 PROCEDURES',
 ]);
-
-// ─── ANSI Color Helpers ─────────────────────────────────────────────────────
 
 const colors = {
   reset: '\x1b[0m',
@@ -90,8 +48,6 @@ function logSection(msg) {
   console.log(`${colors.bright}${colors.magenta}  ── ${msg} ${'─'.repeat(Math.max(0, 50 - msg.length))}${colors.reset}`);
 }
 
-// ─── Migration History Table ────────────────────────────────────────────────
-
 const HISTORY_TABLE = `${config.migration.historySchema}.${config.migration.historyTable}`;
 
 async function ensureHistoryTable(pool) {
@@ -117,7 +73,7 @@ async function getExecutedScripts(pool) {
      WHERE success = TRUE
      ORDER BY id`
   );
-  // Build a Set for fast lookups: "folderName/scriptName"
+  
   const executed = new Map();
   for (const row of result.rows) {
     executed.set(`${row.folder_name}/${row.script_name}`, row);
@@ -140,12 +96,6 @@ async function resetHistory(pool) {
   logSuccess(`Migration history table "${HISTORY_TABLE}" has been dropped.`);
 }
 
-// ─── File System Helpers ────────────────────────────────────────────────────
-
-/**
- * Get sorted migration folders from the scripts directory.
- * Folders must start with a numeric prefix (e.g., "01 SCHEMA", "02 TYPES").
- */
 function getMigrationFolders(scriptsDir) {
   if (!fs.existsSync(scriptsDir)) {
     throw new Error(`Scripts directory not found: ${scriptsDir}`);
@@ -164,10 +114,6 @@ function getMigrationFolders(scriptsDir) {
   return folders;
 }
 
-/**
- * Get sorted SQL scripts from a folder.
- * Scripts must end with .sql and start with a numeric prefix (e.g., "0001_app.tbl_user.sql").
- */
 function getScriptsInFolder(folderPath) {
   const entries = fs.readdirSync(folderPath, { withFileTypes: true });
   const scripts = entries
@@ -182,22 +128,17 @@ function getScriptsInFolder(folderPath) {
   return scripts;
 }
 
-/**
- * Simple hash of file contents to detect changes.
- */
 function hashContent(content) {
   const crypto = require('crypto');
   return crypto.createHash('sha256').update(content).digest('hex').substring(0, 16);
 }
-
-// ─── Migration Runner ───────────────────────────────────────────────────────
 
 async function runMigrations() {
   const scriptsDir = path.resolve(config.migration.scriptsDir);
   const pool = new Pool(config.db);
 
   try {
-    // Test connection
+    
     logHeader('Service Center System OCR - Database Migration');
     logInfo(`Connecting to PostgreSQL at ${config.db.host}:${config.db.port}/${config.db.database}...`);
 
@@ -206,14 +147,11 @@ async function runMigrations() {
     logSuccess(`Connected! ${versionResult.rows[0].version.split(',')[0]}`);
     client.release();
 
-    // Ensure migration history table
     await ensureHistoryTable(pool);
     logSuccess(`Migration history table "${HISTORY_TABLE}" is ready.`);
 
-    // Get already-executed scripts
     const executedScripts = await getExecutedScripts(pool);
 
-    // Get migration folders
     const folders = getMigrationFolders(scriptsDir);
     if (folders.length === 0) {
       logWarn(`No migration folders found in: ${scriptsDir}`);
@@ -227,7 +165,6 @@ async function runMigrations() {
     let totalSkipped = 0;
     let totalFailed = 0;
 
-    // Process each folder in order
     for (const folder of folders) {
       const scripts = getScriptsInFolder(folder.fullPath);
       if (scripts.length === 0) {
@@ -237,7 +174,6 @@ async function runMigrations() {
 
       logSection(`${folder.name} (${scripts.length} script${scripts.length > 1 ? 's' : ''})`);
 
-      // Process each script in order
       for (const script of scripts) {
         const key = `${folder.name}/${script.name}`;
         const sqlContent = fs.readFileSync(script.fullPath, 'utf8').trim();
@@ -245,7 +181,6 @@ async function runMigrations() {
 
         const alwaysRun = ALWAYS_RUN_FOLDERS.has(folder.name);
 
-        // Check if already executed
         if (executedScripts.has(key) && !alwaysRun) {
           const prev = executedScripts.get(key);
 
@@ -266,14 +201,12 @@ async function runMigrations() {
           logInfo(`${script.name} (re-running ${folder.name})`);
         };
 
-        // Skip empty files
         if (!sqlContent) {
           logSkip(`${script.name} (empty file)`);
           totalSkipped++;
           continue;
         }
 
-        // Execute the script within a transaction
         const client = await pool.connect();
         const startTime = Date.now();
 
@@ -302,12 +235,10 @@ async function runMigrations() {
 
           totalFailed++;
 
-          // Stop execution on error
           console.log();
           logError('Migration stopped due to error. Fix the script and re-run.');
           logInfo(`File: ${script.fullPath}`);
 
-          // Print summary before exit
           printSummary(totalExecuted, totalSkipped, totalFailed);
           process.exit(1);
         } finally {
@@ -316,7 +247,6 @@ async function runMigrations() {
       }
     }
 
-    // Final summary
     printSummary(totalExecuted, totalSkipped, totalFailed);
 
   } catch (err) {
@@ -341,8 +271,6 @@ function printSummary(executed, skipped, failed) {
   console.log(`${colors.bright}${'─'.repeat(60)}${colors.reset}`);
   console.log();
 }
-
-// ─── Status Command ─────────────────────────────────────────────────────────
 
 async function showStatus() {
   const scriptsDir = path.resolve(config.migration.scriptsDir);
@@ -393,8 +321,6 @@ async function showStatus() {
     await pool.end();
   }
 }
-
-// ─── CLI Entry Point ────────────────────────────────────────────────────────
 
 async function main() {
   const args = process.argv.slice(2);

@@ -14,6 +14,5 @@ CREATE TABLE IF NOT EXISTS inv.tbl_receipt (
     updated_by      int not null DEFAULT 0
 );
 
--- log table
 CREATE TABLE inv.tbl_receipt_log AS
 SELECT * FROM inv.tbl_receipt;
