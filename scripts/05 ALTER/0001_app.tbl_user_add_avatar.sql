@@ -1,7 +1,4 @@
--- ============================================================
--- Alter: app.tbl_user - Add avatar column
--- Description: Adds avatar_url column to user table
--- ============================================================
+
 
 DO $$
 BEGIN

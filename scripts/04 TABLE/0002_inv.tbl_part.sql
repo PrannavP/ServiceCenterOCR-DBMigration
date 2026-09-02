@@ -11,6 +11,5 @@ CREATE TABLE IF NOT EXISTS inv.tbl_part (
     updated_by      int not null DEFAULT 0
 );
 
--- log table
 CREATE TABLE inv.tbl_part_log AS
 SELECT * FROM inv.tbl_part;

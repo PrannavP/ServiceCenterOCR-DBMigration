@@ -1,7 +1,4 @@
--- ============================================================
--- Function: app.fn_get_user_by_id
--- Description: Returns a user record by user_id
--- ============================================================
+
 
 CREATE OR REPLACE FUNCTION app.fn_get_user_by_id(p_user_id INT)
 RETURNS TABLE (

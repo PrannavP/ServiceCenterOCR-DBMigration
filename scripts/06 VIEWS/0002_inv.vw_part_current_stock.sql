@@ -3,7 +3,6 @@ SELECT
     p.id AS part_id,
     p.name AS part_name,
 
-    -- Current stock = total received - total used
     COALESCE(
         (
             SELECT SUM(COALESCE(rd.quantity, 0))
@@ -20,7 +19,6 @@ SELECT
         ), 0
     ) AS available_qty,
 
-    -- Rate from the latest receipt of this part
     (
         SELECT rd.rate
         FROM inv.tbl_receipt_detail rd
